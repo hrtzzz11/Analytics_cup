@@ -80,6 +80,9 @@ df <- df %>% select(-Cost_Center)
 #df <- df %>% mutate(Delivery = as.Date(Delivery, format = "YYYY-MM-DD HH:MM:SS.SSS"))
 
 #variable types have been adjusted
+#maybe we want to remove some non Resellers 
+#from the data in order to balance out our specificity and sensitivity
+#since otherwise our balanced accuracy sucks
 train_ind <- sample(1:nrow(df), 0.7*nrow(df))
 train <- df[train_ind, ]
 test <- df[-train_ind, ]
@@ -96,5 +99,10 @@ predictions <- ifelse(predictions > 0.5, 1, 0)
 
 
 error_rate <- mean(test$Reseller != predictions)
+predictions <- as.factor(predictions)
+actual <- as.factor(test$Reseller)
+confusion_matrix <- confusionMatrix(predictions, actual)
+
 
 error_rate
+confusion_matrix
